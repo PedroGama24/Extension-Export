@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Exportação Automática</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px 18px 12px 18px;
+      background: #f7f7f7;
+      min-width: 260px;
+      min-height: 320px;
+    }
+
+    h3 {
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #444;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 7px 8px;
+      margin-bottom: 2px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    select:focus,
+    input[type="number"]:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    #status {
+      margin-top: 16px;
+      min-height: 22px;
+      text-align: center;
+      color: #2d7a2d;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Exportação Automática</h3>
+  <div class="row">
+    <div class="form-group">
+      <label for="startMonth">Mês inicial:</label>
+      <select id="startMonth">
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="startDay">Dia inicial:</label>
+      <input type="number" id="startDay" min="1" max="31" placeholder="1">
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group">
+      <label for="endMonth">Mês final:</label>
+      <select id="endMonth">
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="endDay">Dia final:</label>
+      <input type="number" id="endDay" min="1" max="31" placeholder="31">
+    </div>
+  </div>
+  <button id="start">Iniciar Exportação</button>
+  <p id="status"></p>
+  <script src="popup.js"></script>
+</body>
+
+</html>

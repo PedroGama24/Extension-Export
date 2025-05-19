@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Exportação Automática de CSV",
+  "version": "1.0",
+  "description": "Automatize a exportação de arquivos CSV de múltiplos dias.",
+  "permissions": ["scripting", "activeTab", "downloads"],
+  "host_permissions": ["https://alloha.fs.ocs.oraclecloud.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+  {
+    "matches": ["https://alloha.fs.ocs.oraclecloud.com/*"],
+    "js": ["content.js"]
+  }
+]
+}
