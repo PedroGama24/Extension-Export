@@ -3,6 +3,7 @@ document.getElementById("start").addEventListener("click", async () => {
   const startMonth = parseInt(document.getElementById("startMonth").value, 10);
   const endDay = parseInt(document.getElementById("endDay").value, 10);
   const endMonth = parseInt(document.getElementById("endMonth").value, 10);
+  const providerId = document.getElementById("area").value; // NOVO
 
   document.getElementById("status").textContent = "Iniciando exportação...";
 
@@ -14,7 +15,7 @@ document.getElementById("start").addEventListener("click", async () => {
 
     chrome.tabs.sendMessage(
       tabs[0].id,
-      { type: "START_EXPORT_RANGE", startDay, startMonth, endDay, endMonth },
+      { type: "START_EXPORT_RANGE", startDay, startMonth, endDay, endMonth, providerId }, // NOVO
       (response) => {
         if (chrome.runtime.lastError) {
           document.getElementById("status").textContent = "Erro ao iniciar exportação.";

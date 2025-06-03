@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if (message.type === "START_EXPORT_RANGE") {
-        const { startDay, startMonth, endDay, endMonth } = message;
+        const { startDay, startMonth, endDay, endMonth, providerId } = message;
         const today = new Date();
         const year = today.getFullYear();
 
@@ -95,7 +95,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         function buildExportUrl(date) {
             const dateStr = formatDate(date);
-            return `https://alloha.fs.ocs.oraclecloud.com/?m=gridexport&a=download&itype=manage&providerId=2645&date=${dateStr}&panel=top&view=time&downloadId=auto&dates=${dateStr}`;
+            return `https://alloha.fs.ocs.oraclecloud.com/?m=gridexport&a=download&itype=manage&providerId=${providerId}&date=${dateStr}&panel=top&view=time&downloadId=auto&dates=${dateStr}`;
         }
 
         function updateStatus(msg) {
