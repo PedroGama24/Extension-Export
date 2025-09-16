@@ -6,150 +6,403 @@
   <title>Exportação Automática</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 16px 18px 12px 18px;
-      background: #f7f7f7;
-      min-width: 260px;
-      min-height: 320px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-width: 320px;
+      min-height: 400px;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     h3 {
-      margin-top: 0;
-      color: #333;
+      margin: 0 0 24px 0;
+      color: #2c3e50;
       text-align: center;
-      letter-spacing: 1px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      position: relative;
     }
 
     label {
-      font-weight: bold;
-      color: #444;
+      font-weight: 600;
+      color: #34495e;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      transition: color 0.3s ease;
     }
 
     select,
     input[type="number"] {
       width: 100%;
-      padding: 7px 8px;
-      margin-bottom: 2px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background: #fff;
+      padding: 12px 16px;
+      margin-bottom: 4px;
+      border: 2px solid #e8eaed;
+      border-radius: 8px;
+      background: #ffffff;
       font-size: 15px;
       box-sizing: border-box;
-      transition: border-color 0.2s;
+      transition: all 0.3s ease;
+      font-family: inherit;
     }
 
     select:focus,
     input[type="number"]:focus {
-      border-color: #4CAF50;
+      border-color: #3498db;
       outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      transform: translateY(-1px);
+    }
+
+    select:hover,
+    input[type="number"]:hover {
+      border-color: #bdc3c7;
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      background-color: #4CAF50;
+      padding: 16px;
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
+      margin-top: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
     }
 
     button:hover {
-      background-color: #388e3c;
+      background: linear-gradient(135deg, #2980b9 0%, #1f6391 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+    }
+
+    button:disabled {
+      background: #bdc3c7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
     }
 
     #status {
-      margin-top: 16px;
-      min-height: 22px;
+      margin-top: 20px;
+      min-height: 24px;
       text-align: center;
-      color: #2d7a2d;
       font-size: 14px;
       font-weight: 500;
+      padding: 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    #status.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #status.success {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    #status.error {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    #status.info {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
     }
 
     .row {
       display: flex;
-      gap: 10px;
+      gap: 16px;
+      margin-bottom: 20px;
     }
 
     .row .form-group {
       flex: 1;
       margin-bottom: 0;
     }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #ecf0f1;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .progress-bar.show {
+      opacity: 1;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3498db, #2980b9);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #2c3e50;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+    }
+
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #2c3e50 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .validation-message {
+      color: #e74c3c;
+      font-size: 12px;
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .validation-message.show {
+      opacity: 1;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #bdc3c7;
+      transition: color 0.3s ease;
+    }
+
+    .form-group.focus .input-icon {
+      color: #3498db;
+    }
+
+    .keyboard-shortcut {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: 16px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse {
+      animation: pulse 1s infinite;
+    }
   </style>
 </head>
 
 <body>
-  <h3>Exportação Automática</h3>
-  <div class="row">
-    <div class="form-group">
-      <label for="startMonth">Mês inicial:</label>
-      <select id="startMonth">
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
-      </select>
+  <div class="container">
+    <h3>🚀 Exportação Automática</h3>
+    
+    <div class="row">
+      <div class="form-group tooltip">
+        <label for="startMonth">📅 Mês inicial:</label>
+        <div class="input-group">
+          <select id="startMonth" aria-label="Selecione o mês inicial">
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+        </div>
+        <span class="tooltiptext">Selecione o mês de início da exportação</span>
+      </div>
+      
+      <div class="form-group tooltip">
+        <label for="startDay">📆 Dia inicial:</label>
+        <div class="input-group">
+          <input type="number" id="startDay" min="1" max="31" placeholder="1" aria-label="Digite o dia inicial">
+          <span class="input-icon">📅</span>
+        </div>
+        <div class="validation-message" id="startDayError">Por favor, insira um dia válido (1-31)</div>
+        <span class="tooltiptext">Digite o dia de início (1-31)</span>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="startDay">Dia inicial:</label>
-      <input type="number" id="startDay" min="1" max="31" placeholder="1">
+    
+    <div class="row">
+      <div class="form-group tooltip">
+        <label for="endMonth">📅 Mês final:</label>
+        <div class="input-group">
+          <select id="endMonth" aria-label="Selecione o mês final">
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+        </div>
+        <span class="tooltiptext">Selecione o mês final da exportação</span>
+      </div>
+      
+      <div class="form-group tooltip">
+        <label for="endDay">📆 Dia final:</label>
+        <div class="input-group">
+          <input type="number" id="endDay" min="1" max="31" placeholder="31" aria-label="Digite o dia final">
+          <span class="input-icon">📅</span>
+        </div>
+        <div class="validation-message" id="endDayError">Por favor, insira um dia válido (1-31)</div>
+        <span class="tooltiptext">Digite o dia final (1-31)</span>
+      </div>
+    </div>
+    
+    <div class="form-group tooltip">
+      <label for="area">🏢 Área:</label>
+      <div class="input-group">
+        <select id="area" aria-label="Selecione a área para exportação">
+          <option value="todos">🌟 Todos</option>
+          <option value="2645">🔵 VIRTUS R6</option>
+          <option value="368">🟢 VIRTUS R.4.4</option>
+          <option value="745">🟡 VIRTUS R3.2</option>
+          <option value="3414">🟣 VIRTUS VPA</option>
+          <option value="4220">🔴 VIRTUS R1</option>
+        </select>
+      </div>
+      <span class="tooltiptext">Escolha uma área específica ou todas as áreas</span>
+    </div>
+    
+    <div class="form-group tooltip" id="formatGroup" style="display: none;">
+      <label for="format">📊 Formato de exportação:</label>
+      <div class="input-group">
+        <select id="format" aria-label="Selecione o formato de exportação">
+          <option value="excel">📈 Excel com abas separadas</option>
+          <option value="csv">📄 CSV consolidado</option>
+        </select>
+      </div>
+      <span class="tooltiptext">Excel: cada área em uma aba | CSV: tudo em um arquivo</span>
+    </div>
+    
+    <button id="start" aria-label="Iniciar processo de exportação">
+      <span id="buttonText">🚀 Iniciar Exportação</span>
+    </button>
+    
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    
+    <div id="status" role="status" aria-live="polite"></div>
+    
+    <div class="keyboard-shortcut">
+      💡 Dica: Use Tab para navegar entre os campos
     </div>
   </div>
-  <div class="row">
-    <div class="form-group">
-      <label for="endMonth">Mês final:</label>
-      <select id="endMonth">
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="endDay">Dia final:</label>
-      <input type="number" id="endDay" min="1" max="31" placeholder="31">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="area">Área:</label>
-    <select id="area">
-      <option value="todos">Todos (Excel com abas separadas)</option>
-      <option value="2645">VIRTUS II</option>
-      <option value="368">VIRTUS R.4.4</option>
-      <option value="2596">VIRTUS I</option>
-      <option value="745">VIRTUS R3.2</option>
-      <option value="3414">VIRTUS VPA</option>
-    </select>
-  </div>
-  <button id="start">Iniciar Exportação</button>
-  <p id="status"></p>
+  
   <script src="popup.js"></script>
 </body>
 

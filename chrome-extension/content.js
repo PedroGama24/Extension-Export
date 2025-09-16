@@ -154,18 +154,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if (message.type === "START_EXPORT_ALL_AREAS") {
-        const { startDay, startMonth, endDay, endMonth } = message;
+        const { startDay, startMonth, endDay, endMonth, format } = message;
         const today = new Date();
         const year = today.getFullYear();
         
         // Lista de todas as áreas (providerIds)
-        const allProviderIds = ["2645", "368", "2596", "745", "3414"];
+        const allProviderIds = ["2645", "368", "2596", "745", "3414", "4220"];
         const areaNames = {
             "2645": "VIRTUS II",
             "368": "VIRTUS R.4.4", 
             "2596": "VIRTUS I",
             "745": "VIRTUS R3.2",
-            "3414": "VIRTUS VPA"
+            "3414": "VIRTUS VPA",
+            "4220": "VIRTUS R1"
         };
 
         // Gera todas as datas do intervalo
@@ -248,27 +249,72 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 await new Promise((resolve) => setTimeout(resolve, 1000)); // Pausa entre áreas
             }
 
-            updateStatus("Criando arquivo Excel com abas separadas...");
+            updateStatus("Criando arquivo de exportação...");
 
             if (allAreaData.length > 0) {
                 try {
-                    // Cria arquivo Excel com abas separadas
-                    const excelBlob = createExcelWithTabs(allAreaData);
-                    
-                    const url = URL.createObjectURL(excelBlob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'exportacao_todas_areas.xls';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    
-                    updateStatus("Exportação Excel com abas separadas concluída!");
-                    alert("Exportação Excel com abas separadas concluída!");
+                    if (format === "csv") {
+                        // Exportação em CSV consolidado
+                        updateStatus("Criando arquivo CSV consolidado...");
+                        
+                        let csvLines = [];
+                        let headerAdded = false;
+                        
+                        allAreaData.forEach((areaData, areaIndex) => {
+                            const lines = areaData.csvData.split('\n').filter(line => line.trim());
+                            
+                            if (lines.length > 0) {
+                                lines.forEach((line, lineIndex) => {
+                                    if (lineIndex === 0 && !headerAdded) {
+                                        csvLines.push(line);
+                                        headerAdded = true;
+                                    } else if (lineIndex > 0) {
+                                        if (line.trim()) {
+                                            csvLines.push(line.trim());
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        
+                        const finalCsvContent = csvLines.join('\n');
+                        const BOM = '\uFEFF';
+                        const blob = new Blob([BOM + finalCsvContent], { 
+                            type: 'text/csv;charset=utf-8' 
+                        });
+                        
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'exportacao_todas_areas.csv';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        
+                        updateStatus("Exportação CSV consolidado concluída!");
+                        alert("Exportação CSV consolidado concluída!");
+                    } else {
+                        // Exportação em Excel com abas separadas (formato padrão)
+                        updateStatus("Criando arquivo Excel com abas separadas...");
+                        
+                        const excelBlob = createExcelWithTabs(allAreaData);
+                        
+                        const url = URL.createObjectURL(excelBlob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'exportacao_todas_areas.xls';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        
+                        updateStatus("Exportação Excel com abas separadas concluída!");
+                        alert("Exportação Excel com abas separadas concluída!");
+                    }
                 } catch (error) {
-                    console.error('Erro ao criar Excel:', error);
-                    updateStatus("Erro ao criar arquivo Excel. Criando CSV como alternativa...");
+                    console.error('Erro ao criar arquivo:', error);
+                    updateStatus("Erro ao criar arquivo. Criando CSV como alternativa...");
                     
                     // Fallback para CSV consolidado
                     let csvLines = [];
@@ -280,12 +326,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         if (lines.length > 0) {
                             lines.forEach((line, lineIndex) => {
                                 if (lineIndex === 0 && !headerAdded) {
-                                    csvLines.push('"Área",' + line);
+                                    csvLines.push(line);
                                     headerAdded = true;
                                 } else if (lineIndex > 0) {
                                     if (line.trim()) {
-                                        const cleanLine = line.trim();
-                                        csvLines.push(`"${areaData.areaName}",${cleanLine}`);
+                                        csvLines.push(line.trim());
                                     }
                                 }
                             });
