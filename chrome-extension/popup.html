@@ -377,15 +377,16 @@
       <span class="tooltiptext">Escolha uma área específica ou todas as áreas</span>
     </div>
     
-    <div class="form-group tooltip" id="formatGroup" style="display: none;">
+    <div class="form-group tooltip" id="formatGroup">
       <label for="format">📊 Formato de exportação:</label>
       <div class="input-group">
         <select id="format" aria-label="Selecione o formato de exportação">
           <option value="excel">📈 Excel com abas separadas</option>
           <option value="csv">📄 CSV consolidado</option>
+          <option value="report">📋 Relatório de dados formatado</option>
         </select>
       </div>
-      <span class="tooltiptext">Excel: cada área em uma aba | CSV: tudo em um arquivo</span>
+      <span class="tooltiptext">Excel: abas separadas | CSV: arquivo único | Relatório: Excel formatado com datas dd/mm/aaaa + ordenação</span>
     </div>
     
     <button id="start" aria-label="Iniciar processo de exportação">

@@ -134,34 +134,58 @@ function cancelExport() {
   updateProgress(0);
 }
 
-// Mostra/esconde opção de formato quando "Todos" é selecionado
+// Mostra opção de formato sempre (para permitir relatório formatado em todas as exportações)
 document.getElementById('area').addEventListener('change', function() {
   const formatGroup = document.getElementById('formatGroup');
   formatGroup.style.transition = 'all 0.3s ease';
   
+  // Sempre mostra as opções de formato
+  formatGroup.style.display = 'block';
+  setTimeout(() => {
+    formatGroup.style.opacity = '1';
+    formatGroup.style.transform = 'translateY(0)';
+  }, 10);
+  
+  // Atualiza as opções baseado na seleção
+  const formatSelect = document.getElementById('format');
   if (this.value === 'todos') {
-    formatGroup.style.display = 'block';
-    setTimeout(() => {
-      formatGroup.style.opacity = '1';
-      formatGroup.style.transform = 'translateY(0)';
-    }, 10);
+    // Para "Todos" - todas as opções disponíveis
+    formatSelect.innerHTML = `
+      <option value="excel">📈 Excel com abas separadas</option>
+      <option value="csv">📄 CSV consolidado</option>
+      <option value="report">📋 Relatório de dados formatado</option>
+    `;
   } else {
-    formatGroup.style.opacity = '0';
-    formatGroup.style.transform = 'translateY(-10px)';
-    setTimeout(() => {
-      formatGroup.style.display = 'none';
-    }, 300);
+    // Para áreas individuais - CSV e Relatório
+    formatSelect.innerHTML = `
+      <option value="csv">📄 CSV padrão</option>
+      <option value="report">📋 Relatório de dados formatado</option>
+    `;
   }
 });
 
-// Verifica na inicialização se "Todos" está selecionado
+// Configura opções de formato na inicialização
 window.addEventListener('load', function() {
   const areaSelect = document.getElementById('area');
   const formatGroup = document.getElementById('formatGroup');
+  const formatSelect = document.getElementById('format');
   
+  // Sempre mostra as opções de formato
+  formatGroup.style.display = 'block';
+  formatGroup.style.opacity = '1';
+  
+  // Configura opções baseado na seleção inicial
   if (areaSelect.value === 'todos') {
-    formatGroup.style.display = 'block';
-    formatGroup.style.opacity = '1';
+    formatSelect.innerHTML = `
+      <option value="excel">📈 Excel com abas separadas</option>
+      <option value="csv">📄 CSV consolidado</option>
+      <option value="report">📋 Relatório de dados formatado</option>
+    `;
+  } else {
+    formatSelect.innerHTML = `
+      <option value="csv">📄 CSV padrão</option>
+      <option value="report">📋 Relatório de dados formatado</option>
+    `;
   }
   
   // Configuração inicial dos campos de data
