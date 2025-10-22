@@ -55,34 +55,75 @@ function processDataForReport(csvData) {
         
         if (lineIndex === 0) {
             headers = cells.map(cell => cell.replace(/^"|"$/g, '').trim());
-            allData.push(cells); // Mantém cabeçalho original
+            
+            // Adiciona coluna de horário após colunas de data que contêm horário
+            const newHeaders = [];
+            headers.forEach((header, idx) => {
+                newHeaders.push(header);
+                // Se é uma coluna de data (Data Abertura, etc), adiciona coluna de horário
+                if (header.toLowerCase().includes('data') && header.toLowerCase().includes('abertura')) {
+                    newHeaders.push('Horário de Abertura');
+                }
+            });
+            headers = newHeaders;
+            allData.push(newHeaders.map(h => `"${h}"`)); // Cabeçalho com nova coluna
         } else {
             // Processa dados: detecta e formata colunas de data automaticamente
-            const processedCells = cells.map((cell, cellIndex) => {
+            const processedCells = [];
+            let originalCellIndex = 0;
+            
+            cells.forEach((cell, cellIndex) => {
                 let cleanCell = cell.replace(/^"|"$/g, '');
                 
-                // Verifica se a coluna atual é uma coluna de data pelo nome do cabeçalho
-                const headerName = headers[cellIndex] || '';
+                // Verifica se a coluna atual é uma coluna de data pelo nome do cabeçalho original
+                const originalHeaders = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+                const headerName = originalHeaders[cellIndex] || '';
                 const isDateColumn = headerName.toLowerCase().includes('data') || 
                                    headerName.toLowerCase().includes('date') ||
                                    headerName.toLowerCase().includes('início') ||
                                    headerName.toLowerCase().includes('inicio') ||
                                    headerName.toLowerCase().includes('fim');
                 
+                const isDataAbertura = headerName.toLowerCase().includes('data') && 
+                                      headerName.toLowerCase().includes('abertura');
+                
+                let extractedTime = '';
+                
                 // Formata datas se a coluna for identificada como data
                 if (isDateColumn && cleanCell) {
+                    // Extrai horário antes de formatar a data
+                    extractedTime = extractTimeFromDate(cleanCell);
+                    
                     const formattedDate = formatDateValue(cleanCell);
                     if (formattedDate !== cleanCell) {
                         cleanCell = formattedDate;
                     }
                 }
                 
-                return cleanCell;
+                processedCells.push(cleanCell);
+                
+                // Se é Data Abertura e tem horário, adiciona coluna de horário
+                if (isDataAbertura && extractedTime) {
+                    processedCells.push(extractedTime);
+                }
             });
             
             allData.push(processedCells);
         }
     });
+    
+    // Extrai horário de uma string de data/hora
+    function extractTimeFromDate(value) {
+        if (!value || typeof value !== 'string') return '';
+        
+        // Procura por padrão de horário HH:mm ou HH:mm:ss
+        const timeMatch = value.match(/(\d{1,2}:\d{2}(?::\d{2})?)/);
+        if (timeMatch) {
+            return timeMatch[1];
+        }
+        
+        return '';
+    }
     
     // Formata data para dd/mm/aaaa
     function formatDateValue(value) {
