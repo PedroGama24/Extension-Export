@@ -539,11 +539,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const { startDay, startMonth, endDay, endMonth, format, year } = message;
         
         // Lista de todas as áreas (providerIds)
-        const allProviderIds = ["9163", "368", "2645"];
+        const allProviderIds = ["9163", "368"];
         const areaNames = {
-            "9163": "VIRTUS",
-            "368": "VIRTUS R.4.4", 
-            "2645": "VIRTUS R6",
+            "9301": "VIRTUS RJ",
+            "9163": "VIRTUS CGT", 
         };
 
         // Gera todas as datas do intervalo
