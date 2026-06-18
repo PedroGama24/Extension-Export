@@ -539,7 +539,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const { startDay, startMonth, endDay, endMonth, format, year } = message;
         
         // Lista de todas as áreas (providerIds)
-        const allProviderIds = ["9163", "368"];
+        const allProviderIds = ["9301", "9163"];
         const areaNames = {
             "9301": "VIRTUS RJ",
             "9163": "VIRTUS CGT", 
